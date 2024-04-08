@@ -15,14 +15,26 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
     TypeOrmModule.forRoot({
       type: 'mysql',
-      database: process.env.DB_DATABASE,
-      host: process.env.DB_HOST,
-      password: process.env.DB_PASSWORD,
-      port: process.env.DB_PORT as unknown as number,
-      username: process.env.DB_USERNAME,
-      synchronize: true,
+      database: "School_Schedule",
+      host: "localhost",
+      password: "admin",
+      port: 3306,
+      username: "root",
+      synchronize: false,
+      dropSchema: false,
       entities: [`${__dirname}/**/*.entity{.js,.ts}`],
     }),
+    
+    // TypeOrmModule.forRoot({
+    //   type: 'mysql',
+    //   database: process.env.DB_DATABASE,
+    //   host: process.env.DB_HOST,
+    //   password: process.env.DB_PASSWORD,
+    //   port: process.env.DB_PORT as unknown as number,
+    //   username: process.env.DB_USERNAME,
+    //   synchronize: true,
+    //   entities: [`${__dirname}/**/*.entity{.js,.ts}`],
+    // }),
 
     MateriaModule,
     AlunoModule,

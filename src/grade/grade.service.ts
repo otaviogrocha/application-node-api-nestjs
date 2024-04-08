@@ -10,42 +10,37 @@ export class GradeService {
   constructor(
     @InjectRepository(GradeEntity)
     private readonly gradeRepository: Repository<GradeEntity>,
-    @InjectRepository(AlunoEntity)
-    private readonly alunoRepository: Repository<AlunoEntity>,
-    @InjectRepository(MateriaEntity)
-    private readonly materiaRepository: Repository<MateriaEntity>,
+    // @InjectRepository(AlunoEntity)
+    // private readonly alunoRepository: Repository<AlunoEntity>,
+    // @InjectRepository(MateriaEntity)
+    // private readonly materiaRepository: Repository<MateriaEntity>,
   ) {}
 
-  async createGrade(createGrade: CreateGradeDTO): Promise<GradeEntity> {
-    return this.gradeRepository.save(createGrade);
-  }
+  // async createGrade(createGrade: CreateGradeDTO): Promise<GradeEntity> {
+  //   return this.gradeRepository.save(createGrade);
+  // }
 
   async createGrade(idAluno: number, createGrade: CreateGradeDTO): Promise<GradeEntity> {
     // Verificar se o aluno existe
-    const aluno = await this.alunoRepository.findOne(idAluno);
-    if (!aluno) {
-      throw new BadRequestException('Aluno não encontrado.');
-    }
+    // const aluno = await this.alunoRepository.findOneById(idAluno);
+    // if (!aluno) {
+    //   throw new BadRequestException('Aluno não encontrado.');
+    // }
 
-    // Verificar se existem pelo menos 5 matérias
-    if (createGrade.length < 5) {
-      throw new BadRequestException('Uma grade deve ter no mínimo 5 matérias.');
-    }
+    // // Verificar se existem pelo menos 5 matérias
+    // if (createGrade.materia.length < 5) {
+    //   throw new BadRequestException('Uma grade deve ter no mínimo 5 matérias.');
+    // }
 
     // Verificar se todas as matérias existem
-    const materias = await this.materiaRepository.findByIds(createGrade);
-    if (materias.length !== createGrade.length) {
-      throw new BadRequestException('Uma ou mais matérias não encontradas.');
-    }
+    // const materias = await this.materiaRepository.findByIds();
+    // if (materias.length !== createGrade.materia.length) {
+    //   throw new BadRequestException('Uma ou mais matérias não encontradas.');
+    // }
 
-    // Criar a nova grade
-    const novaGrade = this.gradeRepository.create({
-      aluno,
-      materias,
-    });
 
     // Salvar a nova grade no banco de dados
-    return this.gradeRepository.save(novaGrade);
+    return this.gradeRepository.save(createGrade);
   }
 
   async getAllGrades(): Promise<GradeEntity[]> {

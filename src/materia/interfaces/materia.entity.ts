@@ -1,10 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-@Entity({ name: 'Materias' })
+@Entity({ name: 'materia' })
 export class MateriaEntity {
   @PrimaryGeneratedColumn('rowid')
   id: number;
-  @Column({ name: 'nome', nullable: false })
+  @Column({ name: 'name', nullable: false })
   name: string;
-  @Column({ name: 'gradeId', nullable: true })
-  gradeId: number;
 }
