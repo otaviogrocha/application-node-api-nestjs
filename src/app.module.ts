@@ -3,9 +3,9 @@ import { MateriaModule } from './materia/materia.module';
 import { AlunoModule } from './aluno/aluno.module';
 import { GradeModule } from './grade/grade.module';
 import { HistoricoModule } from './historico/historico.module';
-import { TopModule } from './top/top.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { NotasModule } from './notas/notas.module';
 
 @Module({
   imports: [
@@ -41,7 +41,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     AlunoModule,
     GradeModule,
     HistoricoModule,
-    TopModule,
+    NotasModule,
   ],
   controllers: [],
   providers: [],

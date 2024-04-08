@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
-import { HistoricoController } from './historico.controller';
-import { HistoricoService } from './historico.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AlunoEntity } from '../aluno/interfaces/aluno.entity';
 import { MateriaEntity } from '../materia/interfaces/materia.entity';
-import { NotasEntity } from '../notas/interfaces/notas.entity';
+import { NotasEntity } from './interfaces/notas.entity';
+import { NotasService } from './notas.service';
+import { NotasController } from './notas.controller';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([NotasEntity, AlunoEntity, MateriaEntity]),
   ],
-  controllers: [HistoricoController],
-  providers: [HistoricoService],
+  controllers: [NotasController],
+  providers: [NotasService],
 })
-export class HistoricoModule {}
+export class NotasModule {}
