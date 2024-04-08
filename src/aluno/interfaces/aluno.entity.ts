@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { GradeEntity } from '../../grade/interfaces/grade.entity';
 
 @Entity({ name: 'aluno' })
 export class AlunoEntity {
@@ -6,4 +13,8 @@ export class AlunoEntity {
   id: number;
   @Column({ name: 'name', nullable: false })
   name: string;
+
+  @OneToOne(() => GradeEntity)
+  @JoinColumn()
+  grade: GradeEntity;
 }

@@ -9,12 +9,20 @@ export class GradeController {
   // async createGrade(@Body() CreateGrade: CreateGradeDTO) {
   //   return this.gradeService.createGrade(CreateGrade);
   // }
-  @Post(':idAluno')
-  async createGrade(@Param('idAluno') idAluno: number, @Body() CreateGrade: CreateGradeDTO) {
-    return this.gradeService.createGrade(idAluno, CreateGrade);
-  } 
+  @Post()
+  async createGrade(
+    // @Param('idAluno') idAluno: number,
+    @Body() CreateGrade: CreateGradeDTO,
+  ) {
+    return this.gradeService.createGrade(CreateGrade);
+  }
   @Get()
   async getAllGrades() {
     return this.gradeService.getAllGrades();
+  }
+
+  @Get('aluno/:alunoId')
+  async getMateriasByAlunoId(@Param('alunoId') alunoId: number) {
+    return this.gradeService.getMateriasById(alunoId);
   }
 }
