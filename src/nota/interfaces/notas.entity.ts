@@ -2,8 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToMany,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { AlunoEntity } from '../../aluno/interfaces/aluno.entity';
@@ -17,14 +16,14 @@ export class NotasEntity {
   @Column()
   aluno_id: number;
 
-  @OneToOne(() => AlunoEntity)
+  @ManyToOne(() => AlunoEntity)
   @JoinColumn({ name: 'aluno_id', referencedColumnName: 'id' })
   aluno: AlunoEntity;
 
   @Column()
   materia_id: number;
 
-  @ManyToMany(() => MateriaEntity)
+  @ManyToOne(() => MateriaEntity)
   @JoinColumn({ name: 'materia_id', referencedColumnName: 'id' })
   materia: MateriaEntity;
 

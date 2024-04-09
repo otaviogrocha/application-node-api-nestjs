@@ -76,7 +76,9 @@ export class GradeService {
 
   async getAllGrades(): Promise<GradeEntity[]> {
     try {
-      return await this.gradeRepository.find();
+      return await this.gradeRepository.find({
+        relations: ['materias'],
+      });
     } catch (error) {
       console.error('Erro ao buscar as grades:', error);
       return [];

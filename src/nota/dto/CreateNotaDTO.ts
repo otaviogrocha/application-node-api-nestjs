@@ -1,4 +1,4 @@
-export class CreateNotasDTO {
+export class CreateNotaDTO {
   readonly id: number;
   readonly aluno_id: number;
   readonly materia_id: number;

@@ -14,6 +14,7 @@ export class AlunoEntity {
   @Column({ name: 'name', nullable: false })
   name: string;
 
+  // associar idGrade- TODO
   @OneToOne(() => GradeEntity)
   @JoinColumn()
   grade: GradeEntity;

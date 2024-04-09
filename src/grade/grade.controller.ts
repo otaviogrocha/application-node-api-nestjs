@@ -11,10 +11,7 @@ export class GradeController {
   //   return this.gradeService.createGrade(CreateGrade);
   // }
   @Post()
-  async createGrade(
-    // @Param('idAluno') idAluno: number,
-    @Body() CreateGrade: CreateGradeDTO,
-  ) {
+  async createGrade(@Body() CreateGrade: CreateGradeDTO) {
     return this.gradeService.createGrade(CreateGrade);
   }
   @Get()

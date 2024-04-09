@@ -3,14 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AlunoEntity } from '../aluno/interfaces/aluno.entity';
 import { MateriaEntity } from '../materia/interfaces/materia.entity';
 import { NotasEntity } from './interfaces/notas.entity';
-import { NotasService } from './notas.service';
-import { NotasController } from './notas.controller';
+import { NotaService } from './nota.service';
+import { NotaController } from './nota.controller';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([NotasEntity, AlunoEntity, MateriaEntity]),
   ],
-  controllers: [NotasController],
-  providers: [NotasService],
+  controllers: [NotaController],
+  providers: [NotaService],
 })
-export class NotasModule {}
+export class NotaModule {}
