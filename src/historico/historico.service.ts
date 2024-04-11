@@ -1,10 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotasEntity } from '../nota/interfaces/notas.entity';
 import { GradeEntity } from '../grade/interfaces/grade.entity';
 import { AlunoEntity } from '../aluno/interfaces/aluno.entity';
-// import { MateriaEntity } from '../materia/interfaces/materia.entity';
 
 @Injectable()
 export class HistoricoService {
@@ -15,8 +14,6 @@ export class HistoricoService {
     private readonly alunoRepository: Repository<AlunoEntity>,
     @InjectRepository(GradeEntity)
     private readonly gradeRepository: Repository<GradeEntity>,
-    // @InjectRepository(MateriaEntity)
-    // private readonly materiaRepository: Repository<MateriaEntity>,
   ) {}
 
   // async getHistory() {
@@ -42,24 +39,10 @@ export class HistoricoService {
   //   return historico;
   // }
 
-  // Exiba essas informações: (id do aluno, nome do aluno, grade do aluno[NomeMatéria1, NomeMatéria2...], e notas respectivas as materias do aluno)
-  // async getHistory() {
-  //   return this.notasRepository
-  //     .createQueryBuilder('nota')
-  //     .leftJoinAndSelect('nota.aluno', 'aluno')
-  //     .leftJoinAndSelect('aluno.grade', 'grade')
-  //     .leftJoinAndSelect('grade.materias', 'materia')
-  //     .select([
-  //       'aluno.id AS id_aluno',
-  //       'aluno.name AS nome_aluno',
-  //       'grade.id AS id_grade',
-  //       'materia.id AS id_materia',
-  //       'materia.name AS nome_materia',
-  //       'nota.nota AS nota',
-  //     ])
-  //     .getRawMany();
-  // }
 
+  //  (id do aluno, nome do aluno, grade do aluno[NomeMatéria1, NomeMatéria2...], e notas respectivas as materias do aluno)
+
+  // ============ Substituir estruturas por DTO =============
   async getHistory() {
     const notas = await this.notasRepository.find({
       relations: ['aluno', 'materia'],
@@ -73,26 +56,17 @@ export class HistoricoService {
       const materia = nota.materia.name;
       const nota_value = nota.nota.toString();
 
-      const aluno = await this.alunoRepository.findOne({
-        where: { id: id_aluno },
-        relations: ['grade'],
+      const grade = await this.gradeRepository.findOne({
+        where: { aluno_id: id_aluno },
+        relations: ['materias'],
       });
 
-      // const grade = await this.gradeRepository.findOne({
-      //   where: { aluno_id: id_aluno },
-      //   relations: ['materias'],
-      // });
-
-      // if (!historico[id_aluno].grade.includes(materia)) {
-      //   historico[id_aluno].grade.push(materia);
-      // }
-
-      const materias = aluno.grade.materias.map((materia) => materia.name);
+      const materias = grade.materias.map((materia) => materia.name);
       if (!historico[id_aluno]) {
         historico[id_aluno] = {
           id_aluno,
           nome_aluno,
-          grade: [materias],
+          grade: materias,
         };
       }
 
@@ -104,6 +78,85 @@ export class HistoricoService {
 
       historico[id_aluno][materia].notas.push(nota_value);
     }
+
+    return historico;
+  }
+
+  // async getHistoryByID(alunoId: number) {
+  //   const notas = await this.notasRepository
+  //     .createQueryBuilder('nota')
+  //     .leftJoinAndSelect('nota.aluno', 'aluno')
+  //     .leftJoinAndSelect('nota.materia', 'materia')
+  //     .where('aluno.id = :alunoId', { alunoId })
+  //     .select(['nota', 'aluno', 'materia'])
+  //     .getMany();
+  //
+  //   const historico = {
+  //     id_aluno: notas[0]?.aluno.id,
+  //     nome_aluno: notas[0]?.aluno.name,
+  //     grade: [],
+  //     materias: {},
+  //   };
+  //
+  //   for (const nota of notas) {
+  //     const materia = nota.materia.name;
+  //     const nota_value = nota.nota.toString();
+  //
+  //     if (!historico.grade.includes(materia)) {
+  //       historico.grade.push(materia);
+  //     }
+  //
+  //     if (!historico.materias[materia]) {
+  //       historico.materias[materia] = {
+  //         notas: [],
+  //       };
+  //     }
+  //
+  //     historico.materias[materia].notas.push(nota_value);
+  //   }
+  //
+  //   return historico;
+  // }
+
+  async getHistoricoByAluno(alunoId: number) {
+    const historico = {
+      id_aluno: alunoId,
+      nome_aluno: '',
+      grade: [],
+      materias: {},
+    };
+
+    const aluno = await this.alunoRepository.findOne({
+      where: { id: alunoId },
+    });
+
+    if (!aluno) {
+      throw new BadRequestException(`Aluno com ID ${alunoId} não encontrado`);
+    }
+
+    historico.nome_aluno = aluno.name;
+
+    const notas = await this.notasRepository.find({
+      where: { aluno_id: alunoId },
+      relations: ['materia'],
+    });
+
+    notas.forEach((nota) => {
+      const materiaNome = nota.materia.name;
+      const nota_value = nota.nota.toString();
+
+      if (!historico.grade.includes(materiaNome)) {
+        historico.grade.push(materiaNome);
+      }
+
+      if (!historico.materias[materiaNome]) {
+        historico.materias[materiaNome] = {
+          notas: [],
+        };
+      }
+
+      historico.materias[materiaNome].notas.push(nota_value);
+    });
 
     return historico;
   }

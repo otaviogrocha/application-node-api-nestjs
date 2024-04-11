@@ -1,11 +1,12 @@
 import {
   Column,
   Entity,
-  JoinColumn,
+  JoinColumn, OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { GradeEntity } from '../../grade/interfaces/grade.entity';
+import { NotasEntity } from '../../nota/interfaces/notas.entity';
 
 @Entity({ name: 'aluno' })
 export class AlunoEntity {
@@ -18,4 +19,7 @@ export class AlunoEntity {
   @OneToOne(() => GradeEntity)
   @JoinColumn()
   grade: GradeEntity;
+
+  @OneToMany(() => NotasEntity, (nota) => nota.aluno)
+  notas: NotasEntity[];
 }

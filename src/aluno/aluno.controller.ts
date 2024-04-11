@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateAlunoDTO } from './dto/createAlunoDTO';
 import { AlunoService } from './aluno.service';
 import { AlunoEntity } from './interfaces/aluno.entity';
@@ -12,5 +12,9 @@ export class AlunoController {
   @Get()
   async getAllAlunos(): Promise<AlunoEntity[]> {
     return this.alunoService.getAllAlunos();
+  }
+  @Get('/:id')
+  async getAlunosById(@Param('id') alunoId: number): Promise<AlunoEntity> {
+    return this.alunoService.getAlunosById(alunoId);
   }
 }

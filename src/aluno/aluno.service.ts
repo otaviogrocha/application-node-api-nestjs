@@ -17,4 +17,9 @@ export class AlunoService {
   async getAllAlunos(): Promise<AlunoEntity[]> {
     return this.alunoRepository.find();
   }
+  async getAlunosById(alunoId: number): Promise<AlunoEntity> {
+    return await this.alunoRepository.findOne({
+      where: { id: alunoId },
+    });
+  }
 }

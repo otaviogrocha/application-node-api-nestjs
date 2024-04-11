@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { HistoricoService } from '../historico/historico.service';
 
 @Controller('historico')
@@ -8,5 +8,10 @@ export class HistoricoController {
   @Get()
   async getHistory() {
     return this.historicoService.getHistory();
+  }
+  @Get(':id')
+  async getHistoryById(@Param('id') alunoId: number) {
+    // return this.historicoService.getHistoryByID(alunoId);
+    return this.historicoService.getHistoricoByAluno(alunoId);
   }
 }
