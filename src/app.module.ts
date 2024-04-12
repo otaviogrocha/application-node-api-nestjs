@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotaModule } from './nota/nota.module';
 import { TopModule } from './top/top.module';
+// import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -38,12 +39,14 @@ import { TopModule } from './top/top.module';
       autoLoadEntities: true,
     }),
 
+
     MateriaModule,
     AlunoModule,
     GradeModule,
     HistoricoModule,
     NotaModule,
     TopModule,
+    // DatabaseModule,
   ],
   controllers: [],
   providers: [],

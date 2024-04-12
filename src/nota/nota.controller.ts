@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, UsePipes, ValidationPipe} from '@nestjs/common';
 import { NotaService } from './nota.service';
 import { CreateNotaDTO } from './dto/CreateNotaDTO';
 
@@ -6,6 +6,7 @@ import { CreateNotaDTO } from './dto/CreateNotaDTO';
 export class NotaController {
   constructor(private readonly notaService: NotaService) {}
   @Post()
+  @UsePipes(new ValidationPipe())
   async createNota(@Body() createNotaDto: CreateNotaDTO) {
     return this.notaService.createNota(createNotaDto);
   }

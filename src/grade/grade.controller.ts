@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, UsePipes, ValidationPipe} from '@nestjs/common';
 import { CreateGradeDTO } from './dto/createGrade.dto';
 import { GradeService } from './grade.service';
 
@@ -11,6 +11,7 @@ export class GradeController {
   //   return this.gradeService.createGrade(CreateGrade);
   // }
   @Post()
+  // @UsePipes(new ValidationPipe())
   async createGrade(@Body() CreateGrade: CreateGradeDTO) {
     return this.gradeService.createGrade(CreateGrade);
   }
@@ -21,6 +22,6 @@ export class GradeController {
 
   @Get('aluno/:alunoId')
   async getMateriasByAlunoId(@Param('alunoId') alunoId: number) {
-    return this.gradeService.getMateriasById(alunoId);
+    return this.gradeService.getGradesById(alunoId);
   }
 }

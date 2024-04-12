@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotasEntity } from '../nota/interfaces/notas.entity';
 import { GradeEntity } from '../grade/interfaces/grade.entity';
 import { AlunoEntity } from '../aluno/interfaces/aluno.entity';
+import {materialize} from "rxjs";
 
 @Injectable()
 export class HistoricoService {
@@ -44,11 +45,11 @@ export class HistoricoService {
 
   // ============ Substituir estruturas por DTO =============
   async getHistory() {
-    const notas = await this.notasRepository.find({
-      relations: ['aluno', 'materia'],
-    });
+    const notas = await this.notasRepository.find({ relations: ['aluno', 'materia'] });
+    if (!notas.length) throw new NotFoundException('Não existem notas registradas.')
 
-    const historico = {};
+    // const historico = {};
+    const historico = [];
 
     for (const nota of notas) {
       const id_aluno = nota.aluno.id;
@@ -56,28 +57,58 @@ export class HistoricoService {
       const materia = nota.materia.name;
       const nota_value = nota.nota.toString();
 
-      const grade = await this.gradeRepository.findOne({
-        where: { aluno_id: id_aluno },
-        relations: ['materias'],
-      });
+      const grade = await this.gradeRepository.findOne({ where: { aluno_id: id_aluno }, relations: ['materias'] });
+      const materiasGrade = grade.materias.map((materia) => materia.name);
+      let alunoHistorico = historico.find(aluno => aluno.id === id_aluno);
 
-      const materias = grade.materias.map((materia) => materia.name);
-      if (!historico[id_aluno]) {
-        historico[id_aluno] = {
-          id_aluno,
-          nome_aluno,
-          grade: materias,
+
+      //    Saída esperada:
+      // "1": {
+      //   "id": 1,
+      //       "nome": "Otávio",
+      //       "grade": []
+      //   }
+
+      // if (!alunoHistorico) {
+      //   alunoHistorico = {
+      //     [id_aluno]: {
+      //       id: id_aluno,
+      //       nome: nome_aluno,
+      //       grade: materiasGrade,
+      //       materias: []
+      //     }
+      //   };
+
+
+        if (!alunoHistorico) {
+        alunoHistorico = {
+            id: id_aluno,
+            nome: nome_aluno,
+            grade: materiasGrade,
+            materias: []
         };
+        historico.push(alunoHistorico)
+      }
+      if (!alunoHistorico.materias.some(m => m.nome === materia)) {
+        alunoHistorico.materias.push({ nome: materia, notas: [] });
       }
 
-      if (!historico[id_aluno][materia]) {
-        historico[id_aluno][materia] = {
-          notas: [],
-        };
-      }
+      alunoHistorico.materias.find(m => m.nome === materia).notas.push(nota_value);
 
-      historico[id_aluno][materia].notas.push(nota_value);
+      // let materiaHistorico = alunoHistorico.materias.find(m => m.nome === materia);
+      //
+      // if (!materiaHistorico) {
+      //   materiaHistorico = {
+      //     nome: materia,
+      //     notas:[]
+      //   };
+      // alunoHistorico.materias.push(materia);
+      // }
+      //
+      // materiaHistorico.notas.push(nota_value);
+
     }
+
 
     return historico;
   }
@@ -123,23 +154,19 @@ export class HistoricoService {
       id_aluno: alunoId,
       nome_aluno: '',
       grade: [],
-      materias: {},
+      materias: []
+      // materias: {},
     };
 
-    const aluno = await this.alunoRepository.findOne({
-      where: { id: alunoId },
-    });
+    const aluno = await this.alunoRepository.findOne({ where: { id: alunoId } });
 
-    if (!aluno) {
-      throw new BadRequestException(`Aluno com ID ${alunoId} não encontrado`);
-    }
+    if (!aluno) throw new BadRequestException(`Aluno com ID ${alunoId} não encontrado`);
+
 
     historico.nome_aluno = aluno.name;
 
-    const notas = await this.notasRepository.find({
-      where: { aluno_id: alunoId },
-      relations: ['materia'],
-    });
+    const notas = await this.notasRepository.find({ where: { aluno_id: alunoId }, relations: ['materia'] });
+    if (!notas.length) throw new BadRequestException(`Não existem notas cadastradas para esse aluno`);
 
     notas.forEach((nota) => {
       const materiaNome = nota.materia.name;
@@ -148,14 +175,11 @@ export class HistoricoService {
       if (!historico.grade.includes(materiaNome)) {
         historico.grade.push(materiaNome);
       }
-
-      if (!historico.materias[materiaNome]) {
-        historico.materias[materiaNome] = {
-          notas: [],
-        };
+      if (!historico.materias.some(m => m.nome === materiaNome)) {
+        historico.materias.push({ nome: materiaNome, notas: [] });
       }
 
-      historico.materias[materiaNome].notas.push(nota_value);
+      historico.materias.find(m => m.nome === materiaNome).notas.push(nota_value);
     });
 
     return historico;

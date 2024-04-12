@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, UsePipes, ValidationPipe} from '@nestjs/common';
 import { CreateAlunoDTO } from './dto/createAlunoDTO';
 import { AlunoService } from './aluno.service';
 import { AlunoEntity } from './interfaces/aluno.entity';
@@ -6,6 +6,7 @@ import { AlunoEntity } from './interfaces/aluno.entity';
 export class AlunoController {
   constructor(private readonly alunoService: AlunoService) {}
   @Post()
+  @UsePipes(new ValidationPipe())
   async createAluno(@Body() CreateAluno: CreateAlunoDTO) {
     return this.alunoService.createAluno(CreateAluno);
   }
@@ -15,6 +16,6 @@ export class AlunoController {
   }
   @Get('/:id')
   async getAlunosById(@Param('id') alunoId: number): Promise<AlunoEntity> {
-    return this.alunoService.getAlunosById(alunoId);
+    return this.alunoService.getAlunoById(alunoId);
   }
 }

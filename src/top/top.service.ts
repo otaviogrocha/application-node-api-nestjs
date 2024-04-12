@@ -15,13 +15,14 @@ export class TopService {
   async getTopAlunos() {
     const queryBuilder = this.alunoRepository.createQueryBuilder('aluno');
     const queryResult = await queryBuilder
-      .leftJoin('aluno.notas', 'nota')
+      .innerJoin('aluno.notas', 'nota') // Inner Join para exibir apenas alunos com notas cadastradas.
       .select('aluno.id', 'id')
       .addSelect('aluno.name', 'name')
       .addSelect('AVG(nota.nota)', 'media')
       .groupBy('aluno.id')
       .orderBy('media', 'DESC')
       .getRawMany();
+
 
     const topAlunos = [];
 

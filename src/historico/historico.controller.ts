@@ -11,7 +11,6 @@ export class HistoricoController {
   }
   @Get(':id')
   async getHistoryById(@Param('id') alunoId: number) {
-    // return this.historicoService.getHistoryByID(alunoId);
     return this.historicoService.getHistoricoByAluno(alunoId);
   }
 }

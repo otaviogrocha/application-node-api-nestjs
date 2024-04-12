@@ -27,8 +27,8 @@ export class NotasEntity {
   @JoinColumn({ name: 'materia_id', referencedColumnName: 'id' })
   materia: MateriaEntity;
 
-  @ManyToOne(() => AlunoEntity, (aluno) => aluno.notas)
-  aluno_nota: AlunoEntity;
+  // @ManyToOne(() => AlunoEntity, (aluno) => aluno.notas)
+  // aluno_nota: AlunoEntity;
 
   @Column({ type: 'decimal', precision: 4, scale: 2 })
   nota: number;
